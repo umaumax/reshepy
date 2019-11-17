@@ -2,6 +2,15 @@
 
 * [Reverse Shell \(リバースシェル\) 入門 & 実践 \- 好奇心の足跡]( https://kusuwada.hatenablog.com/entry/2019/10/30/044325 )
 
+## how to install
+```
+# for avoiding 'pip Installing collected packages: UNKNOWN'
+pip3 install setuptools --upgrade
+pip3 install https://github.com/umaumax/reshepy/archive/master.tar.gz
+```
+
+----
+
 ## darwin
 * [macos \- Create reverse shell using High Sierra? \- Ask Different]( https://apple.stackexchange.com/questions/324824/create-reverse-shell-using-high-sierra )
 
