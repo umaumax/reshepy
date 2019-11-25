@@ -37,7 +37,7 @@ def main():
                         help='shell bin path')
     parser.add_argument('address', default='localhost:8080',
                         help='host[:port] server address')
-    # parser.add_argument('-v', '--verbose', action='store_true')
+    parser.add_argument('-v', '--verbose', action='store_true')
 
     args, _ = parser.parse_known_args()
     if len(_) > 0:
@@ -65,6 +65,10 @@ def main():
     hostname = host
     if args.host:
         hostname = args.host
+
+    if args.verbose:
+        print("target   = {}:{}".format(host, port), file=sys.stderr)
+        print("hostname = {}".format(hostname), file=sys.stderr)
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
         if args.disable_ssl:
