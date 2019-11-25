@@ -15,7 +15,8 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-c', '--cert', default='',
                         help='cert.pem (for oreore server certifications)')
-    # NOTE: this default value is used for avoiding 'ValueError: server_hostname cannot be an empty string or start with a leading dot.'
+    # NOTE: this default value is used for avoiding
+    # 'ValueError: server_hostname cannot be an empty string or start with a leading dot.'
     parser.add_argument('--host', default='',
                         help='server (fully qualified) host name (e.g. www.localhost.com) (if None, address is used)')
     parser.add_argument('-p', '--port', default=8080, type=int,
