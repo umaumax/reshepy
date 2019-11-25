@@ -62,7 +62,7 @@ def main():
 
     hostname = host
     if args.host:
-        hostname = host
+        hostname = args.host
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
         if args.disable_ssl:
