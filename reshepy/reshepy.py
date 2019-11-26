@@ -45,7 +45,8 @@ def main():
         parser.print_help()
         sys.exit(1)
 
-    context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    if args.insecure or args.cert:
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
     if args.insecure:
         context.check_hostname = False
         context.verify_mode = ssl.CERT_NONE
