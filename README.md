@@ -1,4 +1,4 @@
-# reverse shell written in python
+# REverse SHell written in PYthon
 
 このコマンドの存在意義はvictimマシン上で，secure/nosecureなどをオプションで区別して起動できる点(pythonのone linerを上回る明示的なメリットはない)
 
@@ -6,8 +6,8 @@
 * [Reverse Shell \(リバースシェル\) 入門 & 実践 \- 好奇心の足跡]( https://kusuwada.hatenablog.com/entry/2019/10/30/044325 )
 
 ## reverse shell use case
-* 任意のコマンドを実行できるサーバであるが，インタラクティブな操作ができない場合
-  * jenkinsのslave(victim) <-> my machine(attacker)
+* 任意のコマンドを実行できるサーバであるが，シェルでインタラクティブな操作ができない場合
+  * e.g. jenkinsのslave(victim) <-> my machine(attacker)
 
 ## how to install
 ``` bash
@@ -18,7 +18,7 @@ pip3 install https://github.com/umaumax/reshepy/archive/master.tar.gz
 ```
 
 ``` bash
-# atacker machine
+# attacker machine
 # mac
 brew install socat
 # ubuntu
